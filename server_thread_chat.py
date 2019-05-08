@@ -36,11 +36,10 @@ class Server(threading.Thread):
 		while True:
 			self.connection, self.client_address = self.my_socket.accept()
 			print >> sys.stderr, 'connection from', self.client_address
-			
+
 			clt = ProcessTheClient(self.connection, self.client_address)
 			clt.start()
 			self.the_clients.append(clt)
-	
 
 def main():
 	svr = Server()
@@ -48,4 +47,3 @@ def main():
 
 if __name__=="__main__":
 	main()
-
