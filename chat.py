@@ -13,17 +13,17 @@ class Chat:
 		self.users['lineker']={ 'nama': 'Gary Lineker', 'negara': 'Inggris', 'password': 'surabaya','incoming': {}, 'outgoing':{}}
 
 	def proses(self, data):
-		j=data.split(" ")
+		j=data.strip().split(" ")
 		try:
-			command=j[0].strip()
+			command=j[0]
 			if (command=='auth'):
-				username=j[1].strip()
-				password=j[2].strip()
+				username=j[1]
+				password=j[2]
 				return self.autentikasi_user(username,password)
 			elif (command=='send'):
-				sessionid = j[1].strip()
-				usernameto = j[2].strip()
-				message = j[3].strip()
+				sessionid = j[1]
+				usernameto = j[2]
+				message = j[3]
 				usernamefrom = self.sessions[sessionid]['username']
 				return self.send_message(sessionid, usernamefrom, usernameto, message)
 			else:
