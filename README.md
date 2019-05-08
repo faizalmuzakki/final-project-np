@@ -3,7 +3,7 @@
 ### Member
 - Faizal Khilmi Muzakki 05111640000120
 - Marde Fasma Ul'Aza 05111640000046
-- M Hazdi Kurniawan 05111640000---
+- M Hazdi Kurniawan 05111640000072
 
 ### Assignment Description
 - Implementasikan code bapaknya
