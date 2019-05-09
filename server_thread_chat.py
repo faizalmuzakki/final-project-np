@@ -19,7 +19,7 @@ class ProcessTheClient(threading.Thread):
 		while True:
 			data = self.connection.recv(32)
 			if data:
-				self.connection.sendall(json.dumps(chatserver.proses(data)))
+				self.connection.sendall(json.dumps(chatserver.proses(data)) + '\n')
 			else:
 				break
 		self.connection.close()

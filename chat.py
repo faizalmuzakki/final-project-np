@@ -2,7 +2,7 @@ import sys
 import os
 import json
 import uuid
-from queue import Queue
+from Queue import Queue
 
 class Chat:
 	def __init__(self):
