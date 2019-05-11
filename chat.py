@@ -87,8 +87,8 @@ if __name__=="__main__":
 	print sesi
 	#sesi = j.autentikasi_user('messi','surabaya')
 	#print sesi
-	tokenid = sesi['tokenid']
-	print j.proses("send {} henderson helloson " . format(tokenid))
+	# tokenid = sesi['tokenid']
+	# print j.proses("send {} henderson helloson " . format(tokenid))
 	#print j.send_message(tokenid,'messi','henderson','hello son')
 	#print j.send_message(tokenid,'henderson','messi','hello si')
 	#print j.send_message(tokenid,'lineker','messi','hello si dari lineker')
