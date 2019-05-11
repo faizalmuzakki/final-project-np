@@ -6,7 +6,8 @@ from Queue import Queue
 
 class Chat:
 	def __init__(self):
-		self.sessions={}
+		self.sessions= {}
+		self.session= None
 		self.users = {}
 		self.users['messi']={ 'nama': 'Lionel Messi', 'negara': 'Argentina', 'password': 'surabaya', 'incoming' : {}, 'outgoing': {}}
 		self.users['henderson']={ 'nama': 'Jordan Henderson', 'negara': 'Inggris', 'password': 'surabaya', 'incoming': {}, 'outgoing': {}}
@@ -16,18 +17,31 @@ class Chat:
 		j=data.strip().split(" ")
 		try:
 			command=j[0]
-			if (command=='auth'):
+			if (self.session):
+				if (command=='send'):
+					sessionid = self.session['tokenid']
+					usernameto = j[1]
+					message = j[2]
+					usernamefrom = self.session['username']
+					print sessionid,usernamefrom
+					return self.send_message(sessionid, usernamefrom, usernameto, message)
+				return {'status': 'SESSION', 'message': 'Session Diterima'}
+			elif (command=='auth'):
 				username=j[1]
 				password=j[2]
 				return self.autentikasi_user(username,password)
-			elif (command=='send'):
-				sessionid = j[1]
-				usernameto = j[2]
-				message = j[3]
-				usernamefrom = self.sessions[sessionid]['username']
-				return self.send_message(sessionid, usernamefrom, usernameto, message)
 			else:
-				return {'status': 'ERROR', 'message': 'Protocol Tidak Benar'}
+				return {'status': 'ERROR', 'message': 'Login Terlebih Dahulu'}
+			return {'status': 'ERROR', 'message': 'Protocol Tidak Benar'}
+			
+			# elif (command=='send'):
+				# sessionid = j[1]
+				# usernameto = j[2]
+				# message = j[3]
+				# usernamefrom = self.sessions[sessionid]['username']
+				# return self.send_message(sessionid, usernamefrom, usernameto, message)
+			# else:
+			# 	return {'status': 'ERROR', 'message': 'Protocol Tidak Benar'}
 		except IndexError:
 			return {'status': 'ERROR', 'message': 'Protocol Tidak Benar'}
 
@@ -38,6 +52,7 @@ class Chat:
 			return { 'status': 'ERROR', 'message': 'Password Salah' }
 		tokenid = str(uuid.uuid4())
 		self.sessions[tokenid]={ 'username': username, 'userdetail':self.users[username]}
+		self.session = {'tokenid':tokenid, 'username': username, 'userdetail':self.users[username]}
 		return { 'status': 'OK', 'tokenid': tokenid }
 
 	def get_user(self, username):
@@ -83,15 +98,16 @@ class Chat:
 
 if __name__=="__main__":
 	j = Chat()
-        sesi = j.proses("auth messi surabaya")
-	print sesi
+	sesi = j.proses("auth messi surabaya")
+	print j.proses("send lineker halo")
+	# print sesi
 	#sesi = j.autentikasi_user('messi','surabaya')
 	#print sesi
 	# tokenid = sesi['tokenid']
 	# print j.proses("send {} henderson helloson " . format(tokenid))
-	#print j.send_message(tokenid,'messi','henderson','hello son')
+	# print j.send_message(123,'messi','henderson','hello son')
 	#print j.send_message(tokenid,'henderson','messi','hello si')
 	#print j.send_message(tokenid,'lineker','messi','hello si dari lineker')
 
 
-	#print j.get_inbox('messi')
+	# print j.get_inbox('henderson')
