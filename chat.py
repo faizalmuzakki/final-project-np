@@ -17,19 +17,22 @@ class Chat:
 		j=data.strip().split(" ")
 		try:
 			command=j[0]
+
+			if (command=='auth'):
+				username=j[1]
+				password=j[2]
+				return self.autentikasi_user(username,password)
+
 			if (self.session):
 				if (command=='send'):
 					sessionid = self.session['tokenid']
 					usernameto = j[1]
 					message = j[2]
 					usernamefrom = self.session['username']
-					print sessionid,usernamefrom
 					return self.send_message(sessionid, usernamefrom, usernameto, message)
+				elif (command=='read'):
+					return self.get_inbox(self.session['username'])
 				return {'status': 'SESSION', 'message': 'Session Diterima'}
-			elif (command=='auth'):
-				username=j[1]
-				password=j[2]
-				return self.autentikasi_user(username,password)
 			else:
 				return {'status': 'ERROR', 'message': 'Login Terlebih Dahulu'}
 			return {'status': 'ERROR', 'message': 'Protocol Tidak Benar'}
