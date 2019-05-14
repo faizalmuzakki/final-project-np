@@ -11,8 +11,10 @@ class Chat:
 		self.users['messi']={ 'nama': 'Lionel Messi', 'negara': 'Argentina', 'password': 'surabaya', 'incoming' : {}, 'outgoing': {}}
 		self.users['henderson']={ 'nama': 'Jordan Henderson', 'negara': 'Inggris', 'password': 'surabaya', 'incoming': {}, 'outgoing': {}}
 		self.users['lineker']={ 'nama': 'Gary Lineker', 'negara': 'Inggris', 'password': 'surabaya','incoming': {}, 'outgoing':{}}
+
 	def proses(self,data):
 		j=data.split(" ")
+
 		try:
 			command=j[0].strip()
 			if (command=='auth'):
@@ -32,12 +34,19 @@ class Chat:
                         elif (command=='inbox'):
                                 sessionid = j[1].strip()
                                 username = self.sessions[sessionid]['username']
-                                print "inbox {}" . format(sessionid)
+                                print "inbox {}" . format(username)
                                 return self.get_inbox(username)
+			elif (command == 'logout'):
+				sessionid = j[1].strip()
+				username = self.sessions[sessionid]['username']
+				print "logout {}" . format(username)
+				return self.logout(sessionid)
 			else:
 				return {'status': 'ERROR', 'message': '**Protocol Tidak Benar'}
+
 		except IndexError:
 			return {'status': 'ERROR', 'message': '--Protocol Tidak Benar'}
+
 	def autentikasi_user(self,username,password):
 		if (username not in self.users):
 			return { 'status': 'ERROR', 'message': 'User Tidak Ada' }
@@ -46,10 +55,12 @@ class Chat:
 		tokenid = str(uuid.uuid4())
 		self.sessions[tokenid]={ 'username': username, 'userdetail':self.users[username]}
 		return { 'status': 'OK', 'tokenid': tokenid }
+
 	def get_user(self,username):
 		if (username not in self.users):
 			return False
 		return self.users[username]
+
 	def send_message(self,sessionid,username_from,username_dest,message):
 		if (sessionid not in self.sessions):
 			return {'status': 'ERROR', 'message': 'Session Tidak Ditemukan'}
@@ -85,6 +96,9 @@ class Chat:
 
 		return {'status': 'OK', 'messages': msgs}
 
+	def logout(self, tokenid):
+		self.sessions[tokenid]=None
+		return { 'status': 'OK', 'message': 'Logout succeed' }
 
 if __name__=="__main__":
 	j = Chat()
@@ -97,6 +111,5 @@ if __name__=="__main__":
 	#print j.send_message(tokenid,'messi','henderson','hello son')
 	#print j.send_message(tokenid,'henderson','messi','hello si')
 	#print j.send_message(tokenid,'lineker','messi','hello si dari lineker')
-
 
 	print j.get_inbox('messi')
