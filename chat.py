@@ -7,41 +7,38 @@ from Queue import Queue
 class Chat:
 	def __init__(self):
 		self.sessions= {}
-		self.session= None
 		self.users = {}
 		self.users['messi']={ 'nama': 'Lionel Messi', 'negara': 'Argentina', 'password': 'surabaya', 'incoming' : {}, 'outgoing': {}}
 		self.users['henderson']={ 'nama': 'Jordan Henderson', 'negara': 'Inggris', 'password': 'surabaya', 'incoming': {}, 'outgoing': {}}
 		self.users['lineker']={ 'nama': 'Gary Lineker', 'negara': 'Inggris', 'password': 'surabaya','incoming': {}, 'outgoing':{}}
 
-	def proses(self, data):
+	def proses(self, sessionid, data):
 		j=data.strip().split(" ")
 		try:
 			command=j[0]
 
 			if (command=='auth'):
-				if(self.session!=None):
+				if(sessionid!='kosong'):
 					return {'status': 'ERROR', 'message': 'Logout Terlebih Dahulu'}
 				username=j[1]
 				password=j[2]
 				return self.autentikasi_user(username,password)
 
-			if (self.session):
+			if (sessionid):
 				if (command=='send'):
-					sessionid = self.session['tokenid']
 					usernameto = j[1]
 					message = j[2]
-					usernamefrom = self.session['username']
+					usernamefrom = self.sessions[sessionid]['username']
 					return self.send_message(sessionid, usernamefrom, usernameto, message)
 				elif (command=='read'):
-					return self.get_inbox(self.session['username'])
+					return self.get_inbox(sessionid['username'])
 				elif (command=='logout'):
-					self.session= None
 					return {'status': 'OK', 'message': 'Logout Berhasil'}
 				return {'status': 'SESSION', 'message': 'Session Diterima'}
 			else:
 				return {'status': 'ERROR', 'message': 'Login Terlebih Dahulu'}
 			return {'status': 'ERROR', 'message': 'Protocol Tidak Benar'}
-			
+
 			# elif (command=='send'):
 				# sessionid = j[1]
 				# usernameto = j[2]
@@ -59,8 +56,7 @@ class Chat:
  		if (self.users[username]['password']!= password):
 			return { 'status': 'ERROR', 'message': 'Password Salah' }
 		tokenid = str(uuid.uuid4())
-		self.sessions[tokenid]={ 'username': username, 'userdetail':self.users[username]}
-		self.session = {'tokenid':tokenid, 'username': username, 'userdetail':self.users[username]}
+		self.sessions[tokenid] = { 'username': username, 'userdetail':self.users[username]}
 		return { 'status': 'OK', 'tokenid': tokenid }
 
 	def get_user(self, username):

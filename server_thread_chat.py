@@ -17,9 +17,12 @@ class ProcessTheClient(threading.Thread):
 
 	def run(self):
 		while True:
-			data = self.connection.recv(32)
+			try:
+				sessionid, data = self.connection.recv(1024).decode('utf-8').split('\n')
+			except ValueError:
+				print sessionid
 			if data:
-				self.connection.sendall(json.dumps(chatserver.proses(data)) + '\n')
+				self.connection.sendall(json.dumps(chatserver.proses(sessionid, data)))
 			else:
 				break
 		self.connection.close()
