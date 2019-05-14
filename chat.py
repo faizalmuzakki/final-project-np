@@ -117,8 +117,9 @@ class Chat:
 			return {'status':'Err', 'message':'404 Group not found'}
 
 		if username not in self.groups[group_token]['users']:
-			return {'status':'OK', 'message':'Group joined successfully'}
 			self.groups[group_token]['users'].append(username)
+			return {'status':'OK', 'message':'Group joined successfully'}
+
 		return {'status':'Err', 'message':'You already joined group'}
 
     	def create_group(self, group_name, sessionid):
