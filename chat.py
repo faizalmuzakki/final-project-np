@@ -19,6 +19,8 @@ class Chat:
 			command=j[0]
 
 			if (command=='auth'):
+				if(self.session!=None):
+					return {'status': 'ERROR', 'message': 'Logout Terlebih Dahulu'}
 				username=j[1]
 				password=j[2]
 				return self.autentikasi_user(username,password)
@@ -32,6 +34,9 @@ class Chat:
 					return self.send_message(sessionid, usernamefrom, usernameto, message)
 				elif (command=='read'):
 					return self.get_inbox(self.session['username'])
+				elif (command=='logout'):
+					self.session= None
+					return {'status': 'OK', 'message': 'Logout Berhasil'}
 				return {'status': 'SESSION', 'message': 'Session Diterima'}
 			else:
 				return {'status': 'ERROR', 'message': 'Login Terlebih Dahulu'}
@@ -101,8 +106,11 @@ class Chat:
 
 if __name__=="__main__":
 	j = Chat()
-	sesi = j.proses("auth messi surabaya")
+	print j.proses("auth messi surabaya")
 	print j.proses("send lineker halo")
+	print j.proses("logout")
+	print j.proses("auth lineker surabaya")
+	print j.proses("read")
 	# print sesi
 	#sesi = j.autentikasi_user('messi','surabaya')
 	#print sesi
