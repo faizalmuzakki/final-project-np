@@ -13,3 +13,24 @@
     - Send file/image
 - Implementasikan juga GUI
 - Nggak harus sampai selesai, yang penting progress, hehe (( diusahakan ))
+
+### Protocol
+- `auth [username] [password]`
+- `send [username_to] [message]`
+- `inbox`
+- `logout`
+- `create_group [group_name]`
+
+![create_group](img/fpprogjar-create_group.png)
+
+- `join_group [group_token]`
+
+![join_group](img/fpprogjar-join_group.png)
+
+- `send_group [group_token] [message]`
+
+![send_group](img/fpprogjar-send_group.png)
+
+- `inbox_group [group_token]`
+
+![inbox_group](img/fpprogjar-inbox_group.png)
