@@ -47,11 +47,11 @@ class Chat:
 				group_name = j[2]
 				print "create_group {}" . format(group_name)
 				return self.create_group(group_name, sessionid)
-			# elif (command == 'join_group'):
-			# 	sessionid = j[1]
-			# 	group_name = j[2]
-			# 	print "join_group {}" . format(group_name)
-			# 	return self.create_group(group_name, sessionid)
+			elif (command == 'join_group'):
+				sessionid = j[1]
+				group_token = j[2]
+				print "join_group {}" . format(group_token)
+				return self.join_group(group_token, sessionid)
 			else:
 				return {'status': 'ERROR', 'message': '**Protocol Tidak Benar'}
 
@@ -111,8 +111,15 @@ class Chat:
 		self.sessions[tokenid]=None
 		return { 'status': 'OK', 'message': 'Logout succeed' }
 
-	# def join_group(self, group_token, sessionid):
-	# 	self.groups[group_token]['tokenid'].append
+	def join_group(self, group_token, sessionid):
+		username = self.sessions[sessionid]['username']
+		if(group_token not in self.groups):
+			return {'status':'Err', 'message':'404 Group not found'}
+
+		if username not in self.groups[group_token]['users']:
+			return {'status':'OK', 'message':'Group joined successfully'}
+			self.groups[group_token]['users'].append(username)
+		return {'status':'Err', 'message':'You already joined group'}
 
     	def create_group(self, group_name, sessionid):
 		while(True):
