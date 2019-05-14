@@ -14,16 +14,16 @@ class ChatClient:
         self.tokenid=""
 
     def proses(self,cmdline):
-	j=cmdline.split(" ")
+	j=cmdline.strip().split(" ")
 
 	try:
-	    command=j[0].strip()
+	    command=j[0]
 	    if (command=='auth'):
-		username=j[1].strip()
-		password=j[2].strip()
+		username=j[1]
+		password=j[2]
 		return self.login(username,password)
 	    elif (command=='send'):
-		usernameto = j[1].strip()
+		usernameto = j[1]
                 message=""
                 for w in j[2:]:
                    message="{} {}" . format(message,w)
@@ -32,6 +32,12 @@ class ChatClient:
                 return self.inbox()
             elif (command == 'logout'):
                 return self.logout()
+            elif (command == 'join_group'):
+                group_token = j[1]
+                return self.join_group(group_token)
+            elif (command == 'create_group'):
+                group_name = j[1]
+                return self.create_group(group_name)
 	    else:
 		return "*Maaf, command tidak benar"
 
@@ -91,6 +97,28 @@ class ChatClient:
 
         if result['status']=='OK':
             self.tokenid = ""
+            return "{}" . format(result['message'])
+        else:
+            return "Error, {}" . format(result['message'])
+
+    def create_group(self, group_name):
+        if (self.tokenid==""):
+            return "Error, not authorized"
+        string = "create_group {} {} \r\n" . format(self.tokenid, group_name)
+        result = self.sendstring(string)
+
+        if result['status']=='OK':
+            return "{}" . format(result['messages'])
+        else:
+            return "Error, {}" . format(json.dumps(result['messages']))
+
+    def join_group(self, group_token):
+        if (self.tokenid==""):
+            return "Error, not authorized"
+        string = "join_group {} {} \r\n" . format(self.tokenid, group_token)
+        result = self.sendstring(string)
+
+        if result['status']=='OK':
             return "{}" . format(result['message'])
         else:
             return "Error, {}" . format(result['message'])

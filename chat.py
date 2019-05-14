@@ -8,23 +8,24 @@ class Chat:
 	def __init__(self):
 		self.sessions={}
 		self.users = {}
-		self.users['messi']={ 'nama': 'Lionel Messi', 'negara': 'Argentina', 'password': 'surabaya', 'incoming' : {}, 'outgoing': {}}
-		self.users['henderson']={ 'nama': 'Jordan Henderson', 'negara': 'Inggris', 'password': 'surabaya', 'incoming': {}, 'outgoing': {}}
-		self.users['lineker']={ 'nama': 'Gary Lineker', 'negara': 'Inggris', 'password': 'surabaya','incoming': {}, 'outgoing':{}}
+		self.groups = {}
+		self.users['messi']={ 'nama': 'Lionel Messi', 'negara': 'Argentina', 'password': 'sby', 'incoming' : {}, 'outgoing': {}}
+		self.users['henderson']={ 'nama': 'Jordan Henderson', 'negara': 'Inggris', 'password': 'sby', 'incoming': {}, 'outgoing': {}}
+		self.users['lineker']={ 'nama': 'Gary Lineker', 'negara': 'Inggris', 'password': 'sby','incoming': {}, 'outgoing':{}}
 
 	def proses(self,data):
-		j=data.split(" ")
+		j=data.strip().split(" ")
 
 		try:
-			command=j[0].strip()
+			command=j[0]
 			if (command=='auth'):
-				username=j[1].strip()
-				password=j[2].strip()
+				username=j[1]
+				password=j[2]
                                 print "auth {}" . format(username)
 				return self.autentikasi_user(username,password)
 			elif (command=='send'):
-				sessionid = j[1].strip()
-				usernameto = j[2].strip()
+				sessionid = j[1]
+				usernameto = j[2]
                                 message=""
                                 for w in j[3:]:
                                     message="{} {}" . format(message,w)
@@ -32,15 +33,25 @@ class Chat:
                                 print "send message from {} to {}" . format(usernamefrom,usernameto)
 				return self.send_message(sessionid,usernamefrom,usernameto,message)
                         elif (command=='inbox'):
-                                sessionid = j[1].strip()
+                                sessionid = j[1]
                                 username = self.sessions[sessionid]['username']
                                 print "inbox {}" . format(username)
                                 return self.get_inbox(username)
 			elif (command == 'logout'):
-				sessionid = j[1].strip()
+				sessionid = j[1]
 				username = self.sessions[sessionid]['username']
 				print "logout {}" . format(username)
 				return self.logout(sessionid)
+			elif (command == 'create_group'):
+				sessionid = j[1]
+				group_name = j[2]
+				print "create_group {}" . format(group_name)
+				return self.create_group(group_name, sessionid)
+			# elif (command == 'join_group'):
+			# 	sessionid = j[1]
+			# 	group_name = j[2]
+			# 	print "join_group {}" . format(group_name)
+			# 	return self.create_group(group_name, sessionid)
 			else:
 				return {'status': 'ERROR', 'message': '**Protocol Tidak Benar'}
 
@@ -100,16 +111,15 @@ class Chat:
 		self.sessions[tokenid]=None
 		return { 'status': 'OK', 'message': 'Logout succeed' }
 
-if __name__=="__main__":
-	j = Chat()
-        sesi = j.proses("auth messi surabaya")
-	print sesi
-	#sesi = j.autentikasi_user('messi','surabaya')
-	#print sesi
-	tokenid = sesi['tokenid']
-	print j.proses("send {} henderson hello gimana kabarnya son " . format(tokenid))
-	#print j.send_message(tokenid,'messi','henderson','hello son')
-	#print j.send_message(tokenid,'henderson','messi','hello si')
-	#print j.send_message(tokenid,'lineker','messi','hello si dari lineker')
+	# def join_group(self, group_token, sessionid):
+	# 	self.groups[group_token]['tokenid'].append
 
-	print j.get_inbox('messi')
+    	def create_group(self, group_name, sessionid):
+		while(True):
+			group_token = str(uuid.uuid4())[:5]
+			if group_token not in self.groups:
+				break
+		admin_name = self.sessions[sessionid]['username']
+		self.groups[group_token] = {'group_name':group_name, 'group_token':group_token, 'admin':admin_name, 'incoming':{}, 'users':[]}
+		self.groups[group_token]['users'].append(admin_name)
+		return {'status':'OK', 'messages': self.groups[group_token]}
