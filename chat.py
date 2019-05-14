@@ -61,6 +61,11 @@ class Chat:
 					message="{} {}" . format(message,w)
 				print "send_group {} {}" . format(group_token, message)
 				return self.send_group(group_token, sessionid, message)
+			elif (command == 'inbox_group'):
+				sessionid = j[1]
+				group_token = j[2]
+				print "inbox_group {}" . format(group_token)
+				return self.inbox_group(group_token, sessionid)
 			else:
 				return {'status': 'ERROR', 'message': '**Protocol Tidak Benar'}
 
@@ -131,14 +136,31 @@ class Chat:
 
 		return {'status':'Err', 'message':'You already joined group'}
 
-	def send_group(self, group_token, sessionid, message):
+	def inbox_group(self, group_token, sessionid):
+		if(group_token not in self.groups):
+			return {'status':'Err', 'message':'404 Group not found'}
+
 		username = self.sessions[sessionid]['username']
+		if username not in self.groups[group_token]['users']:
+			return {'status':'Err', 'message':'You are not group member'}
+
+		return {'status':'OK', 'messages':self.groups[group_token]['incoming']}
+
+	def send_group(self, group_token, sessionid, message):
+		if(group_token not in self.groups):
+			return {'status':'Err', 'message':'404 Group not found'}
+
+		username = self.sessions[sessionid]['username']
+		if username not in self.groups[group_token]['users']:
+			return {'status':'Err', 'message':'You are not group member'}
+
 		now = datetime.datetime.now()
 		try:
 			self.groups[group_token]['incoming'].append({'from':username, 'message':message, 'created_at':now.strftime("%H:%M")})
 		except:
 			return {'status':'OK', 'message':'Something happened'}
-		return {'status':'OK', 'message':'Message sent', 'incoming':self.groups[group_token]['incoming']}
+
+		return {'status':'OK', 'message':'Message sent'}
 
 
     	def create_group(self, group_name, sessionid):
