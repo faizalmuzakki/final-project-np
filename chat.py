@@ -28,35 +28,41 @@ class Chat:
 				password=j[2]
                                 print "auth {}" . format(username)
 				return self.autentikasi_user(username,password)
+
 			elif (command=='send'):
 				sessionid = j[1]
 				usernameto = j[2]
-                                message=""
-                                for w in j[3:]:
-                                    message="{} {}" . format(message,w)
+				message=""
+				for w in j[3:]:
+					message="{} {}" . format(message,w)
 				usernamefrom = self.sessions[sessionid]['username']
-                                print "send message from {} to {}" . format(usernamefrom,usernameto)
+				print "send message from {} to {}" . format(usernamefrom,usernameto)
 				return self.send_message(sessionid,usernamefrom,usernameto,message)
-                        elif (command=='inbox'):
-                                sessionid = j[1]
-                                username = self.sessions[sessionid]['username']
-                                print "{} {}" . format(command, username)
-                                return self.get_inbox(username)
+
+			elif (command=='inbox'):
+				sessionid = j[1]
+				username = self.sessions[sessionid]['username']
+				print "{} {}" . format(command, username)
+				return self.get_inbox(username)
+
 			elif (command == 'logout'):
 				sessionid = j[1]
 				username = self.sessions[sessionid]['username']
 				print "{} {}" . format(command, username)
 				return self.logout(sessionid)
+
 			elif (command == 'create_group'):
 				sessionid = j[1]
 				group_name = j[2]
 				print "{} {}" . format(command, group_name)
 				return self.create_group(group_name, sessionid)
+
 			elif (command == 'join_group'):
 				sessionid = j[1]
 				group_token = j[2]
 				print "{} {}" . format(command, group_token)
 				return self.join_group(group_token, sessionid)
+
 			elif (command == 'send_group'):
 				sessionid = j[1]
 				group_token = j[2]
@@ -65,16 +71,19 @@ class Chat:
 					message="{} {}" . format(message,w)
 				print "{} {} {}" . format(command, group_token, message)
 				return self.send_group(group_token, sessionid, message)
+
 			elif (command == 'inbox_group'):
 				sessionid = j[1]
 				group_token = j[2]
 				print "{} {}" . format(command, group_token)
 				return self.inbox_group(group_token, sessionid)
+
 			elif (command == 'list_group'):
 				sessionid = j[1]
 				group_token = j[2]
 				print "{} {}" . format(command, group_token)
 				return self.list_group(group_token, sessionid)
+				
 			else:
 				return {'status': 'ERROR', 'message': '**Protocol Tidak Benar'}
 

@@ -14,47 +14,55 @@ class ChatClient:
         self.tokenid=""
 
     def proses(self,cmdline):
-	j=cmdline.strip().split(" ")
+        j=cmdline.strip().split(" ")
 
-	try:
-	    command=j[0]
-	    if (command=='auth'):
-		username=j[1]
-		password=j[2]
-		return self.login(username,password)
-	    elif (command=='send'):
-		usernameto = j[1]
+        try:
+            command=j[0]
+            if (command=='auth'):
+                username=j[1]
+                password=j[2]
+                return self.login(username,password)
+
+            elif (command=='send'):
+                usernameto = j[1]
                 message=""
                 for w in j[2:]:
-                   message="{} {}" . format(message,w)
-		return self.sendmessage(usernameto,message)
+                    message="{} {}" . format(message,w)
+                return self.sendmessage(usernameto,message)
+
             elif (command=='inbox'):
                 return self.inbox()
+
             elif (command == 'logout'):
                 return self.logout()
+
             elif (command == 'join_group'):
                 group_token = j[1]
                 return self.join_group(group_token)
+
             elif (command == 'create_group'):
                 group_name = j[1]
                 return self.create_group(group_name)
+
             elif (command == 'inbox_group'):
                 group_name = j[1]
                 return self.inbox_group(group_name)
+
             elif (command == 'list_group'):
                 group_name = j[1]
                 return self.list_group(group_name)
+
             elif (command == 'send_group'):
                 group_token = j[1]
                 message=""
                 for w in j[2:]:
-                   message="{} {}" . format(message,w)
+                    message="{} {}" . format(message,w)
                 return self.send_group(group_token, message)
-	    else:
-		return "*Maaf, command tidak benar"
+            else:
+                return "*Maaf, command tidak benar"
 
-	except IndexError:
-	    return "-Maaf, command tidak benar"
+        except IndexError:
+            return "-Maaf, command tidak benar"
 
     def sendstring(self,string):
         try:
@@ -158,7 +166,7 @@ class ChatClient:
             return "{}" . format(json.dumps(result['message']))
         else:
             return "Error, {}" . format(result['message'])
-    
+
     def send_group(self, group_token, message):
         if (self.tokenid==""):
             return "Error, not authorized"
