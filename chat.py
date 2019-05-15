@@ -13,6 +13,10 @@ class Chat:
 		self.users['messi']={ 'nama': 'Lionel Messi', 'negara': 'Argentina', 'password': 'sby', 'incoming' : {}, 'outgoing': {}}
 		self.users['henderson']={ 'nama': 'Jordan Henderson', 'negara': 'Inggris', 'password': 'sby', 'incoming': {}, 'outgoing': {}}
 		self.users['lineker']={ 'nama': 'Gary Lineker', 'negara': 'Inggris', 'password': 'sby','incoming': {}, 'outgoing':{}}
+		self.users['marde']={ 'nama': 'Marde Fasma', 'negara': 'Jowo', 'password': '123','incoming': {}, 'outgoing':{}}
+		self.users['ical']={ 'nama': 'Faizal Khilmi', 'negara': 'Tetew', 'password': 'sby','incoming': {}, 'outgoing':{}}
+		self.users['haz']={ 'nama': 'M. Hazdi Kurniawan', 'negara': 'Arab', 'password': 'sby','incoming': {}, 'outgoing':{}}
+		self.groups['test']={'group_name':'Testing', 'group_token':'test', 'admin':'marde', 'incoming':[], 'users':['marde','ical','haz']}
 
 	def proses(self,data):
 		j=data.strip().split(" ")
