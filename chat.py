@@ -40,22 +40,22 @@ class Chat:
                         elif (command=='inbox'):
                                 sessionid = j[1]
                                 username = self.sessions[sessionid]['username']
-                                print "inbox {}" . format(username)
+                                print "{} {}" . format(command, username)
                                 return self.get_inbox(username)
 			elif (command == 'logout'):
 				sessionid = j[1]
 				username = self.sessions[sessionid]['username']
-				print "logout {}" . format(username)
+				print "{} {}" . format(command, username)
 				return self.logout(sessionid)
 			elif (command == 'create_group'):
 				sessionid = j[1]
 				group_name = j[2]
-				print "create_group {}" . format(group_name)
+				print "{} {}" . format(command, group_name)
 				return self.create_group(group_name, sessionid)
 			elif (command == 'join_group'):
 				sessionid = j[1]
 				group_token = j[2]
-				print "join_group {}" . format(group_token)
+				print "{} {}" . format(command, group_token)
 				return self.join_group(group_token, sessionid)
 			elif (command == 'send_group'):
 				sessionid = j[1]
@@ -63,13 +63,18 @@ class Chat:
 				message = ""
 				for w in j[3:]:
 					message="{} {}" . format(message,w)
-				print "send_group {} {}" . format(group_token, message)
+				print "{} {} {}" . format(command, group_token, message)
 				return self.send_group(group_token, sessionid, message)
 			elif (command == 'inbox_group'):
 				sessionid = j[1]
 				group_token = j[2]
-				print "inbox_group {}" . format(group_token)
+				print "{} {}" . format(command, group_token)
 				return self.inbox_group(group_token, sessionid)
+			elif (command == 'list_group'):
+				sessionid = j[1]
+				group_token = j[2]
+				print "{} {}" . format(command, group_token)
+				return self.list_group(group_token, sessionid)
 			else:
 				return {'status': 'ERROR', 'message': '**Protocol Tidak Benar'}
 
@@ -140,16 +145,6 @@ class Chat:
 
 		return {'status':'Err', 'message':'You already joined group'}
 
-	def inbox_group(self, group_token, sessionid):
-		if(group_token not in self.groups):
-			return {'status':'Err', 'message':'404 Group not found'}
-
-		username = self.sessions[sessionid]['username']
-		if username not in self.groups[group_token]['users']:
-			return {'status':'Err', 'message':'You are not group member'}
-
-		return {'status':'OK', 'messages':self.groups[group_token]['incoming']}
-
 	def send_group(self, group_token, sessionid, message):
 		if(group_token not in self.groups):
 			return {'status':'Err', 'message':'404 Group not found'}
@@ -166,8 +161,7 @@ class Chat:
 
 		return {'status':'OK', 'message':'Message sent'}
 
-
-    	def create_group(self, group_name, sessionid):
+	def create_group(self, group_name, sessionid):
 		while(True):
 			group_token = str(uuid.uuid4())[:5]
 			if group_token not in self.groups:
@@ -176,3 +170,13 @@ class Chat:
 		self.groups[group_token] = {'group_name':group_name, 'group_token':group_token, 'admin':admin_name, 'incoming':[], 'users':[]}
 		self.groups[group_token]['users'].append(admin_name)
 		return {'status':'OK', 'messages': self.groups[group_token]}
+
+	def list_group(self, group_token, sessionid):
+		if(group_token not in self.groups):
+			return {'status':'Err', 'message':'404 Group not found'}
+
+		username = self.sessions[sessionid]['username']
+		if username not in self.groups[group_token]['users']:
+			return {'status':'Err', 'message':'You are not group member'}
+
+		return {'status':'OK', 'message':self.groups[group_token]['users']}

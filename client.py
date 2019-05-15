@@ -41,6 +41,9 @@ class ChatClient:
             elif (command == 'inbox_group'):
                 group_name = j[1]
                 return self.inbox_group(group_name)
+            elif (command == 'list_group'):
+                group_name = j[1]
+                return self.list_group(group_name)
             elif (command == 'send_group'):
                 group_token = j[1]
                 message=""
@@ -143,6 +146,17 @@ class ChatClient:
         else:
             return "Error, {}" . format(result['message'])
 
+    def list_group(self, group_token):
+        if (self.tokenid==""):
+            return "Error, not authorized"
+        string = "list_group {} {} \r\n" . format(self.tokenid, group_token)
+        result = self.sendstring(string)
+
+        if result['status']=='OK':
+            return "{}" . format(json.dumps(result['message']))
+        else:
+            return "Error, {}" . format(result['message'])
+    
     def send_group(self, group_token, message):
         if (self.tokenid==""):
             return "Error, not authorized"
