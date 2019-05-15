@@ -70,6 +70,8 @@ class ChatClient:
             self.sock.close()
 
     def login(self,username,password):
+        if(self.tokenid!=""):
+            return "Error, authorized already"
         string="auth {} {} \r\n" . format(username,password)
         result = self.sendstring(string)
 
