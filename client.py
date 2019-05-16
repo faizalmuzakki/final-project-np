@@ -5,7 +5,6 @@ import json
 TARGET_IP = "127.0.0.1"
 TARGET_PORT = 8889
 
-
 class ChatClient:
     def __init__(self):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -40,6 +39,10 @@ class ChatClient:
                 group_token = j[1]
                 return self.join_group(group_token)
 
+            elif (command == 'leave_group'):
+                group_token = j[1]
+                return self.leave_group(group_token)
+
             elif (command == 'create_group'):
                 group_name = j[1]
                 return self.create_group(group_name)
@@ -56,8 +59,14 @@ class ChatClient:
                 group_token = j[1]
                 message=""
                 for w in j[2:]:
-                    message="{} {}" . format(message,w)
+                    message="{} {}" . format(message, w)
                 return self.send_group(group_token, message)
+
+            elif (command == 'send_file'):
+                usernameto = j[1]
+                filename = j[2]
+                return self.send_file(usernameto, filename)
+
             else:
                 return "*Maaf, command tidak benar"
 
@@ -93,6 +102,17 @@ class ChatClient:
         if (self.tokenid==""):
             return "Error, not authorized"
         string="send {} {} {} \r\n" . format(self.tokenid,usernameto,message)
+        result = self.sendstring(string)
+
+        if result['status']=='OK':
+            return "message sent to {}" . format(usernameto)
+        else:
+            return "Error, {}" . format(result['message'])
+
+    def send_file(self, usernameto, filename):
+        if (self.tokenid==""):
+            return "Error, not authorized"
+        string="send_file {} {} {} \r\n" . format(self.tokenid, usernameto, filename)
         result = self.sendstring(string)
 
         if result['status']=='OK':
@@ -138,6 +158,17 @@ class ChatClient:
         if (self.tokenid==""):
             return "Error, not authorized"
         string = "join_group {} {} \r\n" . format(self.tokenid, group_token)
+        result = self.sendstring(string)
+
+        if result['status']=='OK':
+            return "{}" . format(result['message'])
+        else:
+            return "Error, {}" . format(result['message'])
+
+    def leave_group(self, group_token):
+        if (self.tokenid==""):
+            return "Error, not authorized"
+        string = "leave_group {} {} \r\n" . format(self.tokenid, group_token)
         result = self.sendstring(string)
 
         if result['status']=='OK':

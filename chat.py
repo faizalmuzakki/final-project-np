@@ -39,6 +39,14 @@ class Chat:
 				print "send message from {} to {}" . format(usernamefrom,usernameto)
 				return self.send_message(sessionid,usernamefrom,usernameto,message)
 
+			elif (command=='send_file'):
+				sessionid = j[1]
+				usernameto = j[2]
+				filename = j[3]
+				usernamefrom = self.sessions[sessionid]['username']
+				print "send_file from {} to {}" . format(usernamefrom, usernameto)
+				return self.send_file(sessionid, usernamefrom, usernameto, filename)
+
 			elif (command=='inbox'):
 				sessionid = j[1]
 				username = self.sessions[sessionid]['username']
@@ -63,6 +71,12 @@ class Chat:
 				print "{} {}" . format(command, group_token)
 				return self.join_group(group_token, sessionid)
 
+			elif (command == 'leave_group'):
+				sessionid = j[1]
+				group_token = j[2]
+				print "{} {}" . format(command, group_token)
+				return self.leave_group(group_token, sessionid)
+
 			elif (command == 'send_group'):
 				sessionid = j[1]
 				group_token = j[2]
@@ -83,7 +97,7 @@ class Chat:
 				group_token = j[2]
 				print "{} {}" . format(command, group_token)
 				return self.list_group(group_token, sessionid)
-				
+
 			else:
 				return {'status': 'ERROR', 'message': '**Protocol Tidak Benar'}
 
@@ -128,6 +142,17 @@ class Chat:
 			inqueue_receiver[username_from].put(message)
 		return {'status': 'OK', 'message': 'Message Sent'}
 
+	def send_file(self, sessionid, username_from, username_dest, filename):
+		if (sessionid not in self.sessions):
+			return {'status': 'ERROR', 'message': 'Session Tidak Ditemukan'}
+		s_fr = self.get_user(username_from)
+		s_to = self.get_user(username_dest)
+
+		if (s_fr==False or s_to==False):
+			return {'status': 'ERROR', 'message': 'User Tidak Ditemukan'}
+
+		return {'status': 'OK', 'message': 'Message Sent'}
+
 	def get_inbox(self,username):
 		s_fr = self.get_user(username)
 		incoming = s_fr['incoming']
@@ -153,6 +178,17 @@ class Chat:
 			return {'status':'OK', 'message':'Group joined successfully'}
 
 		return {'status':'Err', 'message':'You already joined group'}
+
+	def leave_group(self, group_token, sessionid):
+		username = self.sessions[sessionid]['username']
+		if(group_token not in self.groups):
+			return {'status':'Err', 'message':'404 Group not found'}
+
+		if username in self.groups[group_token]['users']:
+			self.groups[group_token]['users'].remove(username)
+			return {'status':'OK', 'message':'You left the group [{}]' . format(group_token)}
+
+		return {'status':'Err', 'message':'You are not the part of the group'}
 
 	def send_group(self, group_token, sessionid, message):
 		if(group_token not in self.groups):
