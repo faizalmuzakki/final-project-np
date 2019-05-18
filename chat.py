@@ -18,7 +18,7 @@ class Chat:
 		self.users['haz']={ 'nama': 'M. Hazdi Kurniawan', 'negara': 'Arab', 'password': 'sby','incoming': {}, 'outgoing':{}}
 		self.groups['test']={'group_name':'Testing', 'group_token':'test', 'admin':'marde', 'incoming':[], 'users':['marde','ical','haz']}
 
-	def proses(self,data):
+	def proses(self, data, connection):
 		j=data.strip().split(" ")
 
 		try:
@@ -45,7 +45,7 @@ class Chat:
 				filename = j[3]
 				usernamefrom = self.sessions[sessionid]['username']
 				print "send_file from {} to {}" . format(usernamefrom, usernameto)
-				return self.send_file(sessionid, usernamefrom, usernameto, filename)
+				return self.send_file(sessionid, usernamefrom, usernameto, filename, connection)
 
 			elif (command=='download_file'):
 				sessionid = j[1]
@@ -155,7 +155,7 @@ class Chat:
 			inqueue_receiver[username_from].put(message)
 		return {'status': 'OK', 'message': 'Message Sent'}
 
-	def send_file(self, sessionid, username_from, username_dest, filename):
+	def send_file(self, sessionid, username_from, username_dest, filename, connection):
 		if (sessionid not in self.sessions):
 			return {'status': 'ERROR', 'message': 'Session Tidak Ditemukan'}
 		s_fr = self.get_user(username_from)
@@ -163,6 +163,20 @@ class Chat:
 
 		if (s_fr==False or s_to==False):
 			return {'status': 'ERROR', 'message': 'User Tidak Ditemukan'}
+
+		try:
+			if not os.path.exists(username_dest):
+				os.makedirs(username_dest)
+			with open(os.path.join(username_dest, filename), 'w+') as file:
+				while True:
+					data = connection.recv(1024)
+					print data[-4:]
+					if(data[-4:] == 'DONE'):
+						break
+					file.write(data)
+				file.close()
+		except IOError:
+			raise
 
 		return {'status': 'OK', 'message': 'File sent'}
 

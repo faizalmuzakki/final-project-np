@@ -24,7 +24,7 @@
 
 - `show_file`
 
-- `send_file [filename] [username_to]`
+- `send_file [username_to] [filename]`
 
 - `download_file [filename]`
 

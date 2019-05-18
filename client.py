@@ -120,7 +120,19 @@ class ChatClient:
         if (self.tokenid==""):
             return "Error, not authorized"
         string="send_file {} {} {} \r\n" . format(self.tokenid, usernameto, filename)
-        result = self.sendstring(string)
+        self.sock.sendall(string)
+
+        try:
+            with open(filename, 'rb') as file:
+                while True:
+                    bytes = file.read(1024)
+                    if not bytes:
+                        result = self.sendstring("DONE")
+                        break
+                    self.sock.sendall(bytes)
+                file.close()
+        except IOError:
+            return "Error, file not found"
 
         if result['status']=='OK':
             return "file sent to {}" . format(usernameto)
