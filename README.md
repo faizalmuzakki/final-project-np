@@ -34,3 +34,7 @@
 - `inbox_group [group_token]`
 
 ![inbox_group](img/fpprogjar-inbox_group.png)
+
+- `leave_group [group_token]`
+
+![inbox_group](img/fpprogjar-leave_group.png)
