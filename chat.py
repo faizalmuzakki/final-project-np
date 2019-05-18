@@ -26,7 +26,7 @@ class Chat:
 			if (command=='auth'):
 				username=j[1]
 				password=j[2]
-                                print "auth {}" . format(username)
+				print "auth {}" . format(username)
 				return self.autentikasi_user(username,password)
 
 			elif (command=='send'):
@@ -46,6 +46,19 @@ class Chat:
 				usernamefrom = self.sessions[sessionid]['username']
 				print "send_file from {} to {}" . format(usernamefrom, usernameto)
 				return self.send_file(sessionid, usernamefrom, usernameto, filename)
+
+			elif (command=='download_file'):
+				sessionid = j[1]
+				filename = j[2]
+				usernamefrom = self.sessions[sessionid]['username']
+				print "{} download_file {}" . format(usernamefrom, filename)
+				# return self.download_file(sessionid, filename)
+
+			elif (command=='ls'):
+				sessionid = j[1]
+				usernamefrom = self.sessions[sessionid]['username']
+				print "{} ls" . format(usernamefrom, filename)
+				# return self.ls(sessionid)
 
 			elif (command=='inbox'):
 				sessionid = j[1]
@@ -151,7 +164,7 @@ class Chat:
 		if (s_fr==False or s_to==False):
 			return {'status': 'ERROR', 'message': 'User Tidak Ditemukan'}
 
-		return {'status': 'OK', 'message': 'Message Sent'}
+		return {'status': 'OK', 'message': 'File sent'}
 
 	def get_inbox(self,username):
 		s_fr = self.get_user(username)

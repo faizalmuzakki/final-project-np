@@ -15,10 +15,22 @@
 - Nggak harus sampai selesai, yang penting progress, hehe (( diusahakan ))
 
 ### Protocol
+#### User => user
 - `auth [username] [password]`
+
 - `send [username_to] [message]`
+
 - `inbox`
+
+- `show_file`
+
+- `send_file [filename] [username_to]`
+
+- `download_file [filename]`
+
 - `logout`
+
+#### User => group
 - `create_group [group_name]`
 
 ![create_group](img/fpprogjar-create_group.png)

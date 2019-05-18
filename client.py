@@ -67,6 +67,13 @@ class ChatClient:
                 filename = j[2]
                 return self.send_file(usernameto, filename)
 
+            elif (command == 'download_file'):
+                filename = j[1]
+                return self.send_file(filename)
+
+            elif (command == 'ls'):
+                return self.ls()
+
             else:
                 return "*Maaf, command tidak benar"
 
@@ -116,7 +123,29 @@ class ChatClient:
         result = self.sendstring(string)
 
         if result['status']=='OK':
-            return "message sent to {}" . format(usernameto)
+            return "file sent to {}" . format(usernameto)
+        else:
+            return "Error, {}" . format(result['message'])
+
+    def download_file(self, filename):
+        if (self.tokenid==""):
+            return "Error, not authorized"
+        string="download_file {} {} \r\n" . format(self.tokenid, filename)
+        result = self.sendstring(string)
+
+        if result['status']=='OK':
+            return "{} downloaded" . format(filename)
+        else:
+            return "Error, {}" . format(result['message'])
+
+    def ls(self):
+        if (self.tokenid==""):
+            return "Error, not authorized"
+        string="ls {} \r\n" . format(self.tokenid)
+        result = self.sendstring(string)
+
+        if result['status']=='OK':
+            return "files:\n{}" . format(result['results'])
         else:
             return "Error, {}" . format(result['message'])
 
