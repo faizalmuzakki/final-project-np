@@ -1,6 +1,7 @@
 import socket
 import os
 import json
+import datetime
 
 TARGET_IP = "127.0.0.1"
 TARGET_PORT = 8889
@@ -69,7 +70,7 @@ class ChatClient:
 
             elif (command == 'download_file'):
                 filename = j[1]
-                return self.send_file(filename)
+                return self.download_file(filename)
 
             elif (command == 'ls'):
                 return self.ls()
@@ -143,12 +144,29 @@ class ChatClient:
         if (self.tokenid==""):
             return "Error, not authorized"
         string="download_file {} {} \r\n" . format(self.tokenid, filename)
-        result = self.sendstring(string)
+        self.sock.sendall(string)
 
-        if result['status']=='OK':
-            return "{} downloaded" . format(filename)
+        data = self.sock.recv(1024)
+
+        if data[:2]=='OK':
+            print data
+            now = datetime.datetime.now()
+            seconds = (now - datetime.datetime(2019, 1, 1)).total_seconds()
+            file =  open(str(int(seconds)) + filename, 'wb')
+            if(file):
+                file.write(data[2:])
+                while True:
+                    data = self.sock.recv(1024)
+                    if(data[-4:] == 'DONE'):
+                        data = data[:-4]
+                        file.write(data)
+                        break
+                    file.write(data)
+                file.close()
+            else:
+                return "Error, something happened"
         else:
-            return "Error, {}" . format(result['message'])
+            return "Error, file not found"
 
     def ls(self):
         if (self.tokenid==""):

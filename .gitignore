@@ -1,4 +1,7 @@
-*.pyc
-henderson
-messi
-lineker
+*
+!img
+!chat.py
+!client.py
+!killport
+!README.md
+!server_thread_chat.py

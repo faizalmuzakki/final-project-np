@@ -19,7 +19,9 @@ class ProcessTheClient(threading.Thread):
 		while True:
 			data = self.connection.recv(1024)
 			if data:
-				self.connection.sendall("{}\r\n\r\n" . format(json.dumps(chatserver.proses(data, self.connection))))
+				sendstring = chatserver.proses(data, self.connection)
+				if sendstring:
+					self.connection.sendall("{}\r\n\r\n" . format(json.dumps(sendstring)))
 			else:
 				break
 		self.connection.close()

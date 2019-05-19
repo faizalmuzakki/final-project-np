@@ -53,7 +53,7 @@ class Chat:
 				filename = j[2]
 				usernamefrom = self.sessions[sessionid]['username']
 				print "{} download_file {}" . format(usernamefrom, filename)
-				# return self.download_file(sessionid, filename)
+				return self.download_file(sessionid, filename, connection)
 
 			elif (command=='ls'):
 				sessionid = j[1]
@@ -196,6 +196,25 @@ class Chat:
 			inqueue_receiver[username_from].put(message)
 
 		return {'status': 'OK', 'message': 'File sent'}
+
+	def download_file(self, sessionid, filename, connection):
+		username = self.sessions[sessionid]['username']
+		print "{} download {}" . format(username, filename)
+
+		try:
+			file = open(os.path.join(username, filename), 'rb')
+		except IOError:
+			return {'status': 'Err', 'message': 'File not found'}
+			
+		result = connection.sendall("OK")
+		while True:
+			data = file.read(1024)
+			if not data:
+				result = connection.sendall("DONE")
+				break
+			connection.sendall(data)
+		file.close()
+		return
 
 	def ls(self, sessionid):
 		username = self.sessions[sessionid]['username']
