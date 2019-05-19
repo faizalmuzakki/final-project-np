@@ -167,16 +167,32 @@ class Chat:
 		try:
 			if not os.path.exists(username_dest):
 				os.makedirs(username_dest)
-			with open(os.path.join(username_dest, filename), 'w+') as file:
+			with open(os.path.join(username_dest, filename), 'wb') as file:
 				while True:
 					data = connection.recv(1024)
-					print data[-4:]
+					print data
 					if(data[-4:] == 'DONE'):
+						data = data[:-4]
+						file.write(data)
 						break
 					file.write(data)
 				file.close()
 		except IOError:
 			raise
+
+		message = { 'msg_from': s_fr['nama'], 'msg_to': s_to['nama'], 'msg': 'sent/received {}' . format(filename) }
+		outqueue_sender = s_fr['outgoing']
+		inqueue_receiver = s_to['incoming']
+		try:
+			outqueue_sender[username_from].put(message)
+		except KeyError:
+			outqueue_sender[username_from]=Queue()
+			outqueue_sender[username_from].put(message)
+		try:
+			inqueue_receiver[username_from].put(message)
+		except KeyError:
+			inqueue_receiver[username_from]=Queue()
+			inqueue_receiver[username_from].put(message)
 
 		return {'status': 'OK', 'message': 'File sent'}
 
