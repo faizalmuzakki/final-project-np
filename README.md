@@ -18,15 +18,27 @@
 #### User => user
 - `auth [username] [password]`
 
+![auth](img/fpprogjar-auth.png)
+
 - `send [username_to] [message]`
+
+![send](img/fpprogjar-send.png)
 
 - `inbox`
 
+![inbox](img/fpprogjar-inbox.png)
+
 - `send_file [username_to] [filename]`
+
+![send_file](img/fpprogjar-send_file.png)
 
 - `download_file [filename]`
 
+![download_file](img/fpprogjar-download_file.png)
+
 - `logout`
+
+![logout](img/fpprogjar-logout.png)
 
 #### User => group
 - `create_group [group_name]`
