@@ -4,6 +4,7 @@ import json
 import uuid
 import datetime
 from Queue import *
+import glob
 
 class Chat:
 	def __init__(self):
@@ -57,8 +58,8 @@ class Chat:
 			elif (command=='ls'):
 				sessionid = j[1]
 				usernamefrom = self.sessions[sessionid]['username']
-				print "{} ls" . format(usernamefrom, filename)
-				# return self.ls(sessionid)
+				print "{} ls" . format(usernamefrom)
+				return self.ls(sessionid)
 
 			elif (command=='inbox'):
 				sessionid = j[1]
@@ -195,6 +196,11 @@ class Chat:
 			inqueue_receiver[username_from].put(message)
 
 		return {'status': 'OK', 'message': 'File sent'}
+
+	def ls(self, sessionid):
+		username = self.sessions[sessionid]['username']
+		files = glob.glob(username+"/*")
+		return {'status': 'OK', 'results': files}
 
 	def get_inbox(self,username):
 		s_fr = self.get_user(username)
