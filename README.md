@@ -22,8 +22,6 @@
 
 - `inbox`
 
-- `show_file`
-
 - `send_file [username_to] [filename]`
 
 - `download_file [filename]`
@@ -49,4 +47,4 @@
 
 - `leave_group [group_token]`
 
-![inbox_group](img/fpprogjar-leave_group.png)
+![leave_group](img/fpprogjar-leave_group.png)
